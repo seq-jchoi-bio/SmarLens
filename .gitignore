@@ -1,0 +1,17 @@
+# Large runtime/data files excluded from GitHub
+app/smarlens.sqlite
+app/blastdb/
+raw/
+db/Pfam/*
+!db/Pfam/README_Pfam.md
+
+# Docker image exports and local archives
+*.tar
+*.tar.gz
+
+# OS/editor/cache files
+.DS_Store
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.pyc

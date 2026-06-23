@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmarLens</title>
+    <link rel="stylesheet" href="/styles.css?v=20260623-countfix">
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <button type="button" class="nav-brand" id="navHome" aria-label="Go to SmarLens home">
+        <span class="brand-mark">SmarLens</span>
+        <span class="brand-sub">Milk Thistle Genome Database</span>
+      </button>
+      <div class="nav-menu">
+        <button type="button" class="nav-link" id="navAbout">About</button>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-link">Tools</button>
+          <div class="dropdown-menu">
+            <button type="button" id="navGeneSearch">Search Gene</button>
+            <button type="button" id="navSimilarSearch">Find Similar Gene</button>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-link">Download</button>
+          <div class="dropdown-menu muted-menu">
+            <button type="button" disabled>TBD</button>
+            <button type="button" disabled>TBD</button>
+            <button type="button" disabled>TBD</button>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-link">Document</button>
+          <div class="dropdown-menu muted-menu">
+            <button type="button" disabled>TBD</button>
+            <button type="button" disabled>TBD</button>
+            <button type="button" disabled>TBD</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main class="shell">
+      <section id="homeView" class="home-view">
+        <header class="home-head">
+          <div class="brand-line">
+            <h1>SmarLens</h1>
+            <span class="beta-badge">Beta</span>
+          </div>
+          <p class="home-intro">SmarLens is a web-based genomics workspace for milk thistle (<em>Silybum marianum</em>), built to support gene-centered exploration of the chromosome-level genome assembly and annotation reported by <a href="https://doi.org/10.1038/s41597-024-03178-3" target="_blank" rel="noreferrer">Kim et al., 2024</a>. The current beta provides Smar gene lookup, transcript model visualization, sequence context, expression summaries, protein domain inspection, and similarity analysis against Arabidopsis resources.</p>
+        </header>
+        <div class="home-grid">
+          <article class="home-tile visual-tile">
+            <img src="/assets/milk-thistle-photo.jpg" alt="Milk thistle flower photograph">
+          </article>
+          <button type="button" class="home-tile action-tile" id="openGeneSearch">
+            <span class="tile-icon search-icon" aria-hidden="true"></span>
+            <span class="tile-title">Gene Search</span>
+          </button>
+          <button type="button" class="home-tile action-tile" id="openSimilarSearch">
+            <span class="tile-icon similar-icon" aria-hidden="true"></span>
+            <span class="tile-title">Find Similar Gene</span>
+            <span class="tile-note">Arabidopsis to Smar candidates</span>
+          </button>
+        </div>
+      </section>
+
+
+      <section id="aboutView" class="app-view about-view hidden">
+        <header class="module-head about-head">
+          <h1>About SmarLens</h1>
+          <p>SmarLens is a beta-stage genomics workspace for gene-centered exploration of milk thistle (<em>Silybum marianum</em>).</p>
+        </header>
+        <section class="about-panel">
+          <h2>Purpose</h2>
+          <p>SmarLens was developed to make early milk thistle genome resources easier to search, inspect, and connect to functional hypotheses. The current release focuses on practical access to Smar gene identifiers, transcript structures, genomic sequence context, expression profiles, protein domains, and similarity relationships with Arabidopsis protein resources.</p>
+          <h2>Reference Genome And Annotation</h2>
+          <p>The genome assembly and annotation used by SmarLens are based on <a href="https://doi.org/10.1038/s41597-024-03178-3" target="_blank" rel="noreferrer">Chromosome-level genome assembly of milk thistle (<em>Silybum marianum</em> (L.) Gaertn.)</a>. Public source files are available from the associated <a href="https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2" target="_blank" rel="noreferrer">figshare dataset</a>.</p>
+          <h2>Current Scope</h2>
+          <p>This beta version provides gene search, multi-gene summaries, transcript model rendering, sequence visualization with flanking controls, normalized RNA-seq count summaries, Pfam-based protein domain views, Arabidopsis similarity candidates, and phylogenetic tree rendering. Download and documentation pages are planned but not yet implemented.</p>
+          <h2>Public Test Limits</h2>
+          <p>For public beta testing, SmarLens currently accepts up to 10 query terms per request. Heavy analyses such as BLAST, hmmscan, MAFFT, and FastTree are timeout-limited and run with restricted concurrency to protect server availability.</p>
+          <h2>Disclaimer</h2>
+          <p class="about-disclaimer">SmarLens is provided as a research-oriented beta resource. The developers and affiliated laboratory do not warrant, and do not assume legal liability or responsibility for, the accuracy, completeness, or usefulness of any data, analysis result, annotation, software output, document, or related information made available through this tool.</p>
+          <h2>Development Team</h2>
+          <div class="team-grid">
+            <article class="team-card">
+              <h3>Main Developer and Code Architect</h3>
+              <p><strong>Janghyun Choi, Ph.D.</strong></p>
+              <p>Implemented the main pipeline modules and designed the major functional components of SmarLens.</p>
+            </article>
+            <article class="team-card">
+              <h3>Project Supervisors</h3>
+              <p><strong>Janghyun Choi, Ph.D.</strong></p>
+              <p><strong>Jinmi Yoon, Ph.D.</strong></p>
+              <p>Provided conceptual guidance and overall project supervision.</p>
+            </article>
+            <article class="team-card">
+              <h3>Contributor</h3>
+              <p><strong>Sinhoe Ahn</strong></p>
+              <p>Contributed to code implementation, module development, pipeline testing, data processing, logic refinement, and validation.</p>
+            </article>
+          </div>
+          <h2>Maintenance</h2>
+          <p>Pipeline maintained by <strong>Janghyun Choi</strong> · <a href="mailto:jchoi@inha.ac.kr">jchoi@inha.ac.kr</a></p>
+        </section>
+      </section>
+
+      <section id="geneSearchView" class="app-view hidden">
+        <section class="search-panel">
+          <div>
+            <button type="button" class="secondary backHome">Back</button>
+            <h1>SmarLens</h1>
+            <p>Silybum marianum gene lookup</p>
+          </div>
+          <form id="searchForm">
+            <textarea id="query" rows="4" spellcheck="false" placeholder="Smar01g000010&#10;Smar09g004660"></textarea>
+            <div class="controls">
+              <button type="submit">Search</button>
+              <button type="button" id="exampleBtn" class="secondary">Example</button>
+              <label class="file-button">Upload IDs<input type="file" id="idFile" accept=".txt,.csv,.tsv"></label>
+              <span id="status">Loading database status...</span>
+              <span class="search-limit">Up to 10 query IDs per request.</span>
+            </div>
+          </form>
+        </section>
+
+        <section id="results" class="results"></section>
+      </section>
+
+      <section id="similarView" class="app-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="similar-workflow">
+          <header class="module-head">
+            <h1>Find Similar Gene</h1>
+            <p>Start with up to 10 Arabidopsis gene symbols or AT gene IDs, then identify similar milk thistle candidates.</p>
+          </header>
+          <form id="similarForm" class="similar-form">
+            <input id="atQuery" type="text" spellcheck="false" placeholder="LEC2 ABI3 FUS3 or AT1G28300">
+            <button type="submit">Check</button>
+          </form>
+          <section id="atConfirm" class="confirm-panel hidden"></section>
+          <section id="similarResults" class="results"></section>
+        </div>
+      </section>
+
+    <div id="quickNav" class="quick-nav hidden" aria-label="Page scroll controls">
+      <button type="button" id="scrollTopBtn" title="Go to top">Top</button>
+      <button type="button" id="scrollBottomBtn" title="Go to bottom">Bottom</button>
+      <button type="button" id="quickBackBtn" title="Back to home">Back</button>
+    </div>
+      <footer class="site-footer">© 2026 Plant Developmental Systems Biology Laboratory and J. Choi. All rights reserved.</footer>
+    </main>
+    <script src="/app.js?v=20260623-countfix"></script>
+  </body>
+</html>

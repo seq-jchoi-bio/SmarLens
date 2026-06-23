@@ -1,0 +1,10 @@
+# Exclude optional or generated data that should not enter Docker images.
+db/Pfam/*
+*.tar
+*.tar.gz
+.DS_Store
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/

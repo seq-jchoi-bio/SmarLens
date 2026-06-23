@@ -1,0 +1,12 @@
+FROM python:3.11-slim-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1     PYTHONUNBUFFERED=1     HOST=0.0.0.0     PORT=8765     PFAM_DB=/opt/smarlens/db/Pfam/Pfam-A.hmm
+
+RUN apt-get update     && apt-get install -y --no-install-recommends         ncbi-blast+         hmmer         mafft         fasttree         ca-certificates     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/smarlens
+COPY app ./app
+COPY raw ./raw
+
+EXPOSE 8765
+CMD ["python", "app/app.py"]

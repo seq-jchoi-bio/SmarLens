@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img">
+  <rect width="800" height="800" fill="#f7f8f7"/>
+  <g transform="translate(400 430)">
+    <path d="M-16 196 C-28 90 -8 6 35 -96" fill="none" stroke="#2f6f59" stroke-width="14" stroke-linecap="round"/>
+    <path d="M-46 80 C-140 28 -192 -32 -228 -118 C-126 -104 -60 -58 -22 16 Z" fill="#5b8f78"/>
+    <path d="M10 42 C104 -8 176 -66 220 -154 C118 -144 42 -100 -4 -18 Z" fill="#6da287"/>
+    <path d="M-34 134 C-124 120 -188 156 -246 220 C-142 230 -70 202 -20 154 Z" fill="#4f806b"/>
+    <path d="M22 118 C112 110 178 142 238 198 C142 214 72 190 22 140 Z" fill="#5b947b"/>
+    <g fill="none" stroke="#e7f0eb" stroke-width="5" stroke-linecap="round" opacity=".7">
+      <path d="M-218 -104 C-130 -80 -76 -42 -28 10"/>
+      <path d="M214 -138 C130 -118 68 -76 2 -12"/>
+      <path d="M-236 214 C-150 200 -82 178 -22 142"/>
+      <path d="M226 194 C136 186 74 164 26 132"/>
+    </g>
+    <g transform="translate(58 -132)">
+      <circle r="86" fill="#6c4b8b"/>
+      <path d="M0 -128 L18 -74 L66 -106 L44 -52 L102 -60 L52 -28 L102 0 L44 2 L76 54 L24 28 L18 86 L-8 34 L-52 78 L-36 22 L-98 34 L-44 -4 L-96 -40 L-36 -34 L-58 -92 L-10 -54 Z" fill="#8b65af"/>
+      <circle r="44" fill="#9b78c1"/>
+      <g stroke="#56356f" stroke-width="5" stroke-linecap="round">
+        <path d="M-52 -56 L-86 -92"/>
+        <path d="M-74 0 L-122 -10"/>
+        <path d="M-44 56 L-74 104"/>
+        <path d="M48 -58 L82 -100"/>
+        <path d="M74 -4 L126 -16"/>
+        <path d="M44 54 L74 100"/>
+      </g>
+    </g>
+  </g>
+</svg>
