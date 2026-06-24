@@ -8,11 +8,15 @@ Public beta service:
 https://smarlens.duckdns.org
 ```
 
+![SmarLens home screen](docs/smarlens-home.png)
+
 Source code:
 
 ```text
 https://github.com/seq-jchoi-bio/SmarLens
 ```
+
+![status](https://img.shields.io/badge/status-public%20beta-0b7a66) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white) ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white) ![HTML5](https://img.shields.io/badge/HTML5-frontend-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-ui-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-client-F7DF1E?logo=javascript&logoColor=111) ![SQLite](https://img.shields.io/badge/SQLite-database-003B57?logo=sqlite&logoColor=white) ![Bioinformatics](https://img.shields.io/badge/BLAST%2B%20%7C%20HMMER%20%7C%20MAFFT%20%7C%20FastTree-analysis-5b6f95) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Main Features
 
@@ -55,22 +59,6 @@ Run SmarLens locally if you need:
 - full control over Docker images, Pfam files, and database rebuilds
 
 Local execution is recommended for intensive analysis. Docker is the most reproducible local route because SmarLens depends on Python, BLAST+, HMMER, MAFFT, FastTree, SQLite, BLAST databases, and source genome files.
-
-## Data Sources
-
-The genome assembly and annotation are based on the chromosome-level milk thistle genome resource reported by Kim et al., 2024.
-
-Reference DOI:
-
-```text
-https://doi.org/10.1038/s41597-024-03178-3
-```
-
-Associated public dataset:
-
-```text
-https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2
-```
 
 ## Local Docker Run
 
@@ -249,6 +237,22 @@ tar -xzf SmarLensDB_raw_v0.1.tar.gz
 ```
 
 Do not rename raw files. Do not manually decompress existing `.gz` files or compress currently uncompressed files. The current file names and compression states are part of the beta rebuild pipeline.
+
+## Data Sources
+
+The genome assembly and annotation are based on the chromosome-level milk thistle genome resource reported by Kim et al., 2024.
+
+Reference DOI:
+
+```text
+https://doi.org/10.1038/s41597-024-03178-3
+```
+
+Associated public dataset:
+
+```text
+https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2
+```
 
 ## Disclaimer
 
