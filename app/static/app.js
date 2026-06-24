@@ -583,7 +583,7 @@ function inputTerms(text) {
 function expressionPeak(rows) {
   if (!rows || !rows.length) return "";
   const best = rows.reduce((a, b) => Number(a.cpm || 0) >= Number(b.cpm || 0) ? a : b);
-  return `${sampleLabel(best.sample)} (${compactNumber(best.cpm)} CPM)`;
+  return sampleLabel(best.sample);
 }
 
 function multiResultsView(payloads) {
@@ -842,7 +842,7 @@ function findSimilarTable(payload) {
           </div>
           <section class="pair-domain-section">
             <h4>Pairwise Domain Comparison</h4>
-            ${pairwiseDomainMatrix(group, groupIndex)}
+            ${payload.deferred ? "<div class='empty'>Detailed Pfam/domain identity analysis is running...</div>" : pairwiseDomainMatrix(group, groupIndex)}
           </section>
         </details>
       `).join("")}
@@ -852,7 +852,7 @@ function findSimilarTable(payload) {
           <button type="button" class="secondary exportFindTreeSvg">SVG</button>
           <button type="button" class="secondary exportFindTreePng">PNG</button>
         </div>
-        ${payload.tree_error ? `<div class="empty">${esc(payload.tree_error)}</div>` : treeSvg(payload.newick, queryLabels)}
+        ${payload.deferred ? "<div class='empty'>Family tree is running after the rank table is displayed.</div>" : (payload.tree_error ? `<div class="empty">${esc(payload.tree_error)}</div>` : treeSvg(payload.newick, queryLabels))}
       </section>
       <p class="note">Candidates are similarity hits, not confirmed orthologs. Pairwise domain identity is calculated for shared Pfam domains when detected in both proteins.</p>
     </article>
@@ -1069,14 +1069,22 @@ $("#searchForm").addEventListener("submit", (e) => {
   });
 });
 
-function showView(view) {
+function showView(view, push = true) {
   homeView.classList.toggle("hidden", view !== "home");
   aboutView.classList.toggle("hidden", view !== "about");
   geneSearchView.classList.toggle("hidden", view !== "gene");
   similarView.classList.toggle("hidden", view !== "similar");
   quickNav.classList.toggle("hidden", !(view === "gene" || view === "similar"));
+  if (push && history.state?.view !== view) {
+    history.pushState({ view }, "", view === "home" ? "/" : `#${view}`);
+  }
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+history.replaceState({ view: "home" }, "", window.location.pathname + window.location.search);
+window.addEventListener("popstate", (event) => {
+  showView(event.state?.view || "home", false);
+});
 
 $("#openGeneSearch").addEventListener("click", () => showView("gene"));
 $("#openSimilarSearch").addEventListener("click", () => showView("similar"));
@@ -1091,9 +1099,14 @@ $("#scrollTopBtn").addEventListener("click", () => {
 $("#scrollBottomBtn").addEventListener("click", () => {
   window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
 });
-$("#quickBackBtn").addEventListener("click", () => showView("home"));
+function returnHome() {
+  history.replaceState({ view: "home" }, "", "/");
+  showView("home", false);
+}
+
+$("#quickBackBtn").addEventListener("click", returnHome);
 document.querySelectorAll(".backHome").forEach(button => {
-  button.addEventListener("click", () => showView("home"));
+  button.addEventListener("click", returnHome);
 });
 
 $("#similarForm").addEventListener("submit", async (e) => {
@@ -1122,12 +1135,22 @@ $("#similarForm").addEventListener("submit", async (e) => {
     const run = $("#runFindSimilar");
     if (run) {
       run.addEventListener("click", async () => {
-        output.innerHTML = "<div class='empty'>Running BLAST, Pfam scan, and domain identity calculation...</div>";
+        output.innerHTML = "<div class='empty'>Running initial BLAST rank search...</div>";
         try {
-          const result = await getJson(`/api/find-similar?q=${encodeURIComponent(q)}`);
-          output.innerHTML = findSimilarTable(result);
-          output.findSimilarPayload = result;
+          const quick = await getJson(`/api/find-similar?q=${encodeURIComponent(q)}&quick=1`);
+          output.innerHTML = findSimilarTable(quick);
+          output.findSimilarPayload = quick;
           bindCandidateReports(output);
+          if (quick.deferred) {
+            const pending = document.createElement("div");
+            pending.className = "search-note";
+            pending.textContent = "Rank table is ready. Pairwise domain comparison and family tree are still running.";
+            output.prepend(pending);
+            const result = await getJson(`/api/find-similar?q=${encodeURIComponent(q)}`);
+            output.innerHTML = findSimilarTable(result);
+            output.findSimilarPayload = result;
+            bindCandidateReports(output);
+          }
         } catch (err) {
           output.innerHTML = `<div class="error">${esc(err.message)}</div>`;
         }

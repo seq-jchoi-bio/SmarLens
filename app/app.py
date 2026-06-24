@@ -604,7 +604,7 @@ def shared_domain_identity(query_protein, candidate):
     return results
 
 
-def smar_candidates_for_at(conn, at, top_n=5):
+def smar_candidates_for_at(conn, at, top_n=5, include_domains=True):
     with tempfile.TemporaryDirectory(prefix="smarlens_findsimilar_") as tmpdir:
         query_fa = os.path.join(tmpdir, "query.fa")
         hits_tsv = os.path.join(tmpdir, "hits.tsv")
@@ -652,7 +652,7 @@ def smar_candidates_for_at(conn, at, top_n=5):
                     "bitscore": float(parts[11]),
                     "seq": smar["seq"],
                 }
-                candidate["domain_identities"] = shared_domain_identity(dict(at), candidate)
+                candidate["domain_identities"] = shared_domain_identity(dict(at), candidate) if include_domains else []
                 candidates.append(candidate)
                 if len(candidates) >= top_n:
                     break
@@ -707,7 +707,7 @@ def family_tree_payload(query_proteins, candidates):
             return {"newick": "", "tree_error": f"{os.path.basename(name)} failed; candidate tables are still shown."}
 
 
-def find_similar_payload(conn, query=None, protein_id=None):
+def find_similar_payload(conn, query=None, protein_id=None, include_details=True):
     if protein_id:
         resolved = {"query": protein_id, "matches": [{"protein_id": protein_id}], "queries": []}
     else:
@@ -744,7 +744,7 @@ def find_similar_payload(conn, query=None, protein_id=None):
     groups = []
     unique_candidates = {}
     for at in query_proteins:
-        candidates = smar_candidates_for_at(conn, at, 5)
+        candidates = smar_candidates_for_at(conn, at, 5, include_domains=include_details)
         for cand in candidates:
             current = unique_candidates.get(cand["gene_id"])
             if not current or cand["bitscore"] > current["bitscore"]:
@@ -759,23 +759,28 @@ def find_similar_payload(conn, query=None, protein_id=None):
             },
             "candidates": [{k: v for k, v in cand.items() if k != "seq"} for cand in candidates],
         })
-    tree = family_tree_payload(query_proteins, list(unique_candidates.values()))
+    tree = family_tree_payload(query_proteins, list(unique_candidates.values())) if include_details else {
+        "newick": "",
+        "tree_error": "Tree calculation is running in the detailed analysis step.",
+    }
 
     payload = {
         "query": query or cache_token,
         "found": True,
         "cached": False,
+        "deferred": not include_details,
         "selected": groups[0]["query_protein"],
         "matches": resolved.get("matches", []),
         "queries": resolved.get("queries", []),
-        "method": "Arabidopsis protein isoforms -> blastp top Smar proteins; shared Pfam domains aligned with MAFFT for pairwise domain identity; family tree from all input isoforms plus unique Smar candidates",
+        "method": "Arabidopsis protein isoforms -> blastp top Smar proteins; shared Pfam domains aligned with MAFFT for pairwise domain identity; family tree from all input isoforms plus unique Smar candidates" if include_details else "Arabidopsis protein isoforms -> blastp top Smar proteins; detailed domain/tree analysis is loading separately",
         "groups": groups,
         "candidates": groups[0]["candidates"],
         "unique_candidates": [{k: v for k, v in cand.items() if k != "seq"} for cand in unique_candidates.values()],
         "newick": tree["newick"],
         "tree_error": tree["tree_error"],
     }
-    store_cached_payload(conn, cache_owner, cache_key, cache_token, payload)
+    if include_details:
+        store_cached_payload(conn, cache_owner, cache_key, cache_token, payload)
     return payload
 
 
@@ -937,6 +942,7 @@ class Handler(SimpleHTTPRequestHandler):
             params = urllib.parse.parse_qs(parsed.query)
             q = params.get("q", [""])[0]
             protein_id = params.get("protein_id", [None])[0]
+            quick = params.get("quick", ["0"])[0].lower() in {"1", "true", "yes"}
             if protein_id and len(protein_id) > 80:
                 self.send_json({"query": protein_id, "found": False, "error": "Protein ID is too long"}, 400)
                 return
@@ -947,7 +953,7 @@ class Handler(SimpleHTTPRequestHandler):
                     return
             try:
                 with db() as conn:
-                    payload = find_similar_payload(conn, q, protein_id)
+                    payload = find_similar_payload(conn, q, protein_id, include_details=not quick)
                 self.send_json(payload, 200 if payload.get("found") else 404)
             except subprocess.TimeoutExpired:
                 self.send_json({"query": q, "found": False, "error": "Find Similar Gene command timed out"}, 504)

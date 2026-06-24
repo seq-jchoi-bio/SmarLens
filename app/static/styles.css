@@ -90,6 +90,12 @@ body {
   font-size: 15px;
 }
 
+.nav-anchor {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 .nav-link:hover,
 .nav-dropdown:focus-within > .nav-link,
 .nav-dropdown:hover > .nav-link,
@@ -425,6 +431,29 @@ body {
 .tile-note {
   color: var(--muted);
   font-size: 15px;
+}
+
+.beta-notice {
+  width: min(980px, 100%);
+  padding: 18px 20px;
+  border: 1px solid #d9a441;
+  border-left: 5px solid #d9a441;
+  border-radius: 8px;
+  background: #fffaf0;
+  color: var(--ink);
+}
+
+.beta-notice strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.beta-notice p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 .placeholder-panel {
