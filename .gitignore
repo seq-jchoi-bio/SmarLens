@@ -9,6 +9,13 @@ db/Pfam/*
 *.tar
 *.tar.gz
 
+# Local secrets and private notes
+security_noUpload/
+*.key
+*.pem
+id_rsa*
+id_ed25519*
+
 # OS/editor/cache files
 .DS_Store
 **/.DS_Store
