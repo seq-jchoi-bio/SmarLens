@@ -1,5 +1,6 @@
 # Large runtime/data files excluded from GitHub
 app/smarlens.sqlite
+app/runtime/
 app/blastdb/
 raw/
 db/Pfam/*

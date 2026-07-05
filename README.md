@@ -262,3 +262,13 @@ SmarLens is provided as a research-oriented beta resource. The developers and af
 
 Pipeline maintained by Janghyun Choi.  
 Contact: jchoi@inha.ac.kr
+
+### Visitor Statistics
+
+SmarLens can keep privacy-preserving visitor statistics for public beta operation. It does not store submitted gene queries, raw IP addresses, full referrer URLs, or full User-Agent strings. The local runtime database stores daily hashed visitor IDs, request path groups, browser family, referrer host, and request counts.
+
+On a Docker-based server, view the summary with:
+
+```bash
+docker-compose exec -T smarlens python /opt/smarlens/app/usage_report.py --days 14
+```

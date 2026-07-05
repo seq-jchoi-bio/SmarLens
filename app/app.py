@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import hashlib
 import os
 import re
 import sqlite3
@@ -19,6 +20,10 @@ DB_PATH = os.path.join(APP_DIR, "smarlens.sqlite")
 AT_BLAST_PREFIX = os.path.join(APP_DIR, "blastdb", "arabidopsis_pep")
 SMAR_BLAST_PREFIX = os.path.join(APP_DIR, "blastdb", "smar_pep")
 PACKAGE_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
+RUNTIME_DIR = os.environ.get("SMARLENS_RUNTIME_DIR", os.path.join(APP_DIR, "runtime"))
+VISITOR_DB_PATH = os.environ.get("SMARLENS_VISITOR_DB", os.path.join(RUNTIME_DIR, "visitor_stats.sqlite"))
+ANALYTICS_ENABLED = os.environ.get("SMARLENS_ANALYTICS", "1").lower() not in {"0", "false", "no"}
+ANALYTICS_LOCK = threading.Lock()
 
 
 def tool_path(env_name, *candidates):
@@ -47,6 +52,132 @@ HEAVY_JOB_SEMAPHORE = threading.Semaphore(2)
 MAX_QUERY_TERMS = 10
 MAX_QUERY_CHARS = 4000
 MAX_AT_PROTEINS = 20
+STATIC_EXTENSIONS = {
+    ".css", ".js", ".png", ".jpg", ".jpeg", ".svg", ".ico", ".webp", ".gif", ".map",
+}
+
+
+def ensure_runtime_dir():
+    os.makedirs(RUNTIME_DIR, exist_ok=True)
+
+
+def analytics_salt():
+    ensure_runtime_dir()
+    salt_path = os.path.join(RUNTIME_DIR, "visitor_salt")
+    if os.path.exists(salt_path):
+        with open(salt_path, "r", encoding="utf-8") as handle:
+            return handle.read().strip()
+    salt = hashlib.sha256(os.urandom(32)).hexdigest()
+    with open(salt_path, "w", encoding="utf-8") as handle:
+        handle.write(salt)
+    try:
+        os.chmod(salt_path, 0o600)
+    except OSError:
+        pass
+    return salt
+
+
+def init_visitor_db(conn):
+    conn.executescript(
+        """
+        CREATE TABLE IF NOT EXISTS visitor_daily (
+            day TEXT NOT NULL,
+            visitor_hash TEXT NOT NULL,
+            path_group TEXT NOT NULL,
+            user_agent_family TEXT NOT NULL,
+            referrer_host TEXT NOT NULL,
+            count INTEGER NOT NULL DEFAULT 0,
+            first_seen REAL NOT NULL,
+            last_seen REAL NOT NULL,
+            PRIMARY KEY (day, visitor_hash, path_group, user_agent_family, referrer_host)
+        );
+        CREATE INDEX IF NOT EXISTS idx_visitor_daily_day ON visitor_daily(day);
+        CREATE INDEX IF NOT EXISTS idx_visitor_daily_path ON visitor_daily(path_group);
+        """
+    )
+    conn.commit()
+
+
+def visitor_db():
+    ensure_runtime_dir()
+    conn = sqlite3.connect(VISITOR_DB_PATH, timeout=5)
+    init_visitor_db(conn)
+    return conn
+
+
+def client_ip(headers, peer_ip):
+    forwarded = headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",", 1)[0].strip()
+    real_ip = headers.get("X-Real-IP", "").strip()
+    return real_ip or peer_ip or "unknown"
+
+
+def user_agent_family(user_agent):
+    ua = (user_agent or "").lower()
+    if "googlebot" in ua:
+        return "Googlebot"
+    if "bingbot" in ua:
+        return "Bingbot"
+    if "bot" in ua or "crawler" in ua or "spider" in ua:
+        return "Bot"
+    if "edg/" in ua:
+        return "Edge"
+    if "chrome/" in ua and "chromium" not in ua:
+        return "Chrome"
+    if "safari/" in ua and "chrome/" not in ua:
+        return "Safari"
+    if "firefox/" in ua:
+        return "Firefox"
+    if "curl/" in ua:
+        return "curl"
+    return "Other"
+
+
+def referrer_host(referrer):
+    if not referrer:
+        return ""
+    host = urllib.parse.urlparse(referrer).hostname or ""
+    return host.lower()[:120]
+
+
+def path_group(path):
+    if path == "/api/status":
+        return None
+    _, ext = os.path.splitext(path)
+    if ext.lower() in STATIC_EXTENSIONS:
+        return None
+    if path.startswith("/api/"):
+        return path[:120]
+    return "/"
+
+
+def record_visit(headers, peer_ip, path):
+    if not ANALYTICS_ENABLED:
+        return
+    group = path_group(path)
+    if not group:
+        return
+    now = time.time()
+    day = time.strftime("%Y-%m-%d", time.gmtime(now))
+    ip = client_ip(headers, peer_ip)
+    salt = analytics_salt()
+    visitor_hash = hashlib.sha256(f"{salt}:{day}:{ip}".encode("utf-8")).hexdigest()[:24]
+    ua_family = user_agent_family(headers.get("User-Agent", ""))
+    ref_host = referrer_host(headers.get("Referer", ""))
+    with ANALYTICS_LOCK:
+        with visitor_db() as conn:
+            conn.execute(
+                """
+                INSERT INTO visitor_daily
+                    (day, visitor_hash, path_group, user_agent_family, referrer_host, count, first_seen, last_seen)
+                VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+                ON CONFLICT(day, visitor_hash, path_group, user_agent_family, referrer_host)
+                DO UPDATE SET count = count + 1, last_seen = excluded.last_seen
+                """,
+                (day, visitor_hash, group, ua_family, ref_host, now, now),
+            )
+            conn.commit()
 
 
 def init_runtime_db(conn):
@@ -859,6 +990,10 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
+        try:
+            record_visit(self.headers, self.client_address[0], parsed.path)
+        except Exception as exc:
+            print(f"Visitor analytics skipped: {exc}", flush=True)
         if parsed.path == "/api/search":
             params = urllib.parse.parse_qs(parsed.query)
             q = params.get("q", [""])[0]
