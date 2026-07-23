@@ -2,6 +2,8 @@
 app/smarlens.sqlite
 app/runtime/
 app/blastdb/
+app/static/jbrowse_data/
+app/static/jbrowse2/
 raw/
 db/Pfam/*
 !db/Pfam/README_Pfam.md
@@ -12,10 +14,33 @@ db/Pfam/*
 
 # Local secrets and private notes
 security_noUpload/
+development_notes_private/
+.env.monitor
+Silymarin_pathway_genes_Ghanbari.csv
 *.key
 *.pem
 id_rsa*
 id_ed25519*
+
+# Pre-publication private backend and build logic
+app/app.py
+app/build_db.py
+app/build_functional_db.py
+app/build_known_silybum_matches.py
+app/export_jbrowse_assets.py
+Dockerfile.full
+docker-compose.yml
+Caddyfile
+Launch_SmarLens.command
+scripts/
+docs/operations_runbook.md
+docs/data_layout_audit.md
+
+# Server-side operational outputs
+logs/
+analytics/
+admin/
+monitoring/
 
 # OS/editor/cache files
 .DS_Store

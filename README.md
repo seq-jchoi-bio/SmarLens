@@ -1,185 +1,70 @@
-# SmarLens beta
+# SmarLens
 
-SmarLens is a web-based genomics workspace for milk thistle (*Silybum marianum*). It supports gene-centered exploration of Smar gene models, transcript structures, sequence context, expression profiles, Pfam domains, and Arabidopsis similarity candidates.
+SmarLens is a public beta web service for milk thistle (*Silybum marianum*) genome exploration and analysis.
 
-Public beta service:
+![status](https://img.shields.io/badge/status-public%20beta-0b7a66)
+![version](https://img.shields.io/badge/version-v2.1.0--beta-386641)
+![service](https://img.shields.io/badge/service-smarlensdb.org-2f6f4e)
+![scope](https://img.shields.io/badge/repository-selected%20public%20source-5b6f95)
+![phase](https://img.shields.io/badge/phase-pre--publication%20beta-a35d00)
+![HTML5](https://img.shields.io/badge/HTML5-frontend-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-ui-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-client-F7DF1E?logo=javascript&logoColor=111)
+![Python](https://img.shields.io/badge/Python-public%20stub-3776AB?logo=python&logoColor=white)
+![Bioinformatics](https://img.shields.io/badge/Bioinformatics-genome%20%7C%20GO%20%7C%20CRISPR%20%7C%20primer-6a994e)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ```text
-https://smarlens.duckdns.org
+https://smarlensdb.org
+```
+
+Current beta version:
+
+```text
+v2.1.0-beta
 ```
 
 ![SmarLens home screen](docs/smarlens-home.png)
 
-Source code:
+## Repository Scope
 
-```text
-https://github.com/seq-jchoi-bio/SmarLens
-```
+This public repository provides documentation, selected frontend assets, screenshots, release notes, data attribution, and public reference code for SmarLens.
 
-![status](https://img.shields.io/badge/status-public%20beta-0b7a66) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white) ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white) ![HTML5](https://img.shields.io/badge/HTML5-frontend-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-ui-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-client-F7DF1E?logo=javascript&logoColor=111) ![SQLite](https://img.shields.io/badge/SQLite-database-003B57?logo=sqlite&logoColor=white) ![Bioinformatics](https://img.shields.io/badge/BLAST%2B%20%7C%20HMMER%20%7C%20MAFFT%20%7C%20FastTree-analysis-5b6f95) ![License](https://img.shields.io/badge/license-MIT-green)
+It does not contain the production backend, production database, runtime indexes, raw data bundles, server configuration, admin dashboard, monitoring scripts, backup scripts, Slack webhook integration, or unpublished prioritization/evidence modules.
 
-## Main Features
+The production service at `https://smarlensdb.org` is the authoritative beta implementation.
 
-- Single and multi-gene Smar ID search
-- Case-insensitive `SmarXXgYYYYYY` lookup
-- Transcript model rendering from GFF features
-- Genomic sequence view with independent upstream/downstream flanking controls
-- RNA-seq expression plots using CPM, median-ratio normalized counts, and raw counts
-- Pfam protein domain scan with `hmmscan`
-- Smar-to-Arabidopsis BLAST similarity candidates
-- Arabidopsis-to-Smar Find Similar Gene workflow
-- Pairwise domain identity for shared Pfam domains
-- Phylogenetic guide tree rendering with SVG/PNG export
-- CSV, FASTA, GFF3, JSON, SVG, and PNG export options
+See [`PUBLIC_REPOSITORY.md`](PUBLIC_REPOSITORY.md) for the public/private boundary used during the pre-publication beta phase.
+
+## Main Tools
+
+- Genome Viewer
+- BLAST Search
+- Search Gene
+- Find Similar Gene
+- Functional Analysis
+- Silymarin Prioritizer
+- Guide RNA Design
+- PCR Primer Design
 
 ## Public Beta Limits
 
-The public server is intended for early testing and feedback. To keep the service available:
+The public server is intended for early testing and feedback. Heavy analyses are limited to protect server availability. Current examples include:
 
-- Maximum 10 query terms per request
-- Maximum input length: 4,000 characters
-- Maximum 20 Arabidopsis protein isoforms after query expansion
-- Uploaded ID file limit: 64 KB
-- Heavy external jobs are concurrency-limited
-- BLAST, `hmmscan`, MAFFT, and FastTree calls have timeouts
-- First-time searches can be slower because BLAST, Pfam, MAFFT, and tree jobs may run on demand
-- Cached analyses are returned much faster when available
+- Find Similar Gene is limited to 10 input queries per request.
+- GO gene lists are limited to 1,000 submitted genes.
+- GO background lists are limited to 100,000 genes.
+- Sequence-based tools use task-specific sequence-length and result-count limits.
+- Heavy external jobs have timeouts and limited concurrency.
 
-SmarLens does not intentionally store submitted gene queries or use them for research tracking. Server logs may temporarily contain minimal technical information required for service operation and troubleshooting.
+SmarLens does not intentionally store submitted gene queries or use them for research tracking. Server logs may temporarily contain minimal technical information required for service operation, security, and troubleshooting.
 
-## When To Run Locally
+## Public Reference Code
 
-For ordinary browsing and light beta testing, use the public server.
-
-Run SmarLens locally if you need:
-
-- faster response for repeated or heavy analyses
-- private testing without submitting queries to the public server
-- development or debugging
-- full control over Docker images, Pfam files, and database rebuilds
-
-Local execution is recommended for intensive analysis. Docker is the most reproducible local route because SmarLens depends on Python, BLAST+, HMMER, MAFFT, FastTree, SQLite, BLAST databases, and source genome files.
-
-## Local Docker Run
-
-The local Docker package uses a full image that already includes the SmarLens app, `smarlens.sqlite`, prebuilt BLAST databases, raw source files, BLAST+, HMMER, MAFFT, and FastTree.
-
-Pfam is not bundled in the Docker image. Place the Pfam files in `db/Pfam/`.
-
-Expected local folder structure:
-
-```text
-SmarLensDB/
-  SmarLens_beta_full_v0.1.tar
-  docker-compose.yml
-  README.md
-  db/
-    Pfam/
-      Pfam-A.hmm
-      Pfam-A.hmm.h3f
-      Pfam-A.hmm.h3i
-      Pfam-A.hmm.h3m
-      Pfam-A.hmm.h3p
-```
-
-### SmarLens full Docker image
-
-Download the full Docker image tar file and place it in the `SmarLensDB` root folder.
-
-| File | Download | Size | MD5 |
-| --- | --- | --- | --- |
-| `SmarLens_beta_full_v0.1.tar` | [Google Drive](https://drive.google.com/file/d/1sEhgxBSMDG94X4wDKbBemyrXeJK1ppAA/view?usp=share_link) | 571 MB | `231592641bf670d80edb9ed5e6a679c9` |
-
-### Pfam setup
-
-Pfam is required for the Protein Domains and pairwise domain identity sections.
-
-If Pfam has not been downloaded and `hmmpress` has not been run yet, set it up once:
+The `public/` folder contains a minimal public stub server and workflow descriptions.
 
 ```bash
-cd /path/to/SmarLensDB
-curl -L -o Pfam-A.hmm.gz https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
-mkdir -p db/Pfam
-gunzip -c Pfam-A.hmm.gz > db/Pfam/Pfam-A.hmm
-docker load -i SmarLens_beta_full_v0.1.tar
-docker compose run --rm smarlens hmmpress /opt/smarlens/db/Pfam/Pfam-A.hmm
-docker compose down
-```
-
-After setup, `db/Pfam/` should contain:
-
-```text
-Pfam-A.hmm
-Pfam-A.hmm.h3f
-Pfam-A.hmm.h3i
-Pfam-A.hmm.h3m
-Pfam-A.hmm.h3p
-```
-
-Run SmarLens:
-
-```bash
-cd /path/to/SmarLensDB
-docker load -i SmarLens_beta_full_v0.1.tar
-docker compose up -d
-```
-
-Open:
-
-```text
-http://localhost:8765
-```
-
-Stop:
-
-```bash
-docker compose down
-```
-
-## If Pfam Is Not Available
-
-SmarLens can still run without Pfam, but domain-related sections will be unavailable.
-
-Features that still work without Pfam:
-
-- Gene Search
-- transcript models
-- sequence view
-- expression plots
-- BLAST-based Arabidopsis similarity
-- Find Similar Gene rank tables and trees
-
-Features that require Pfam:
-
-- Protein Domains
-- pairwise domain identity
-
-## Developer: Build Image From Source
-
-For development, rebuild the full image from `Dockerfile.full`:
-
-```bash
-docker build -f Dockerfile.full -t smarlens:beta-full .
-docker compose up -d
-```
-
-Stop:
-
-```bash
-docker compose down
-```
-
-The user-facing `docker-compose.yml` expects the image tag `smarlens:beta-full` to already exist, either from `docker load` or from the build command above.
-
-## Advanced: Run With Python Directly
-
-Direct Python execution is intended for development only. It requires local Python and the external tools `blastp`, `hmmscan`, `mafft`, and `FastTree` to be available in `PATH` or configured through environment variables.
-
-Run from the app directory:
-
-```bash
-cd app
-python3 app.py
+python3 public/public_app.py
 ```
 
 Open:
@@ -188,55 +73,7 @@ Open:
 http://127.0.0.1:8765
 ```
 
-## Repository Layout
-
-```text
-SmarLensDB/
-  app/
-    app.py
-    build_db.py
-    smarlens.sqlite        # excluded from GitHub, included in full Docker image
-    blastdb/               # excluded from GitHub, included in full Docker image
-    static/
-  raw/                     # excluded from GitHub, included in full Docker image
-  db/Pfam/                 # excluded from GitHub except README_Pfam.md
-  Dockerfile.full
-  docker-compose.yml
-  README.md
-```
-
-## What Is Excluded From GitHub
-
-The GitHub repository does not include large runtime/data files:
-
-```text
-app/smarlens.sqlite
-app/blastdb/
-raw/
-db/Pfam/
-*.tar
-*.tar.gz
-```
-
-These are excluded by `.gitignore`. The beta Docker package is distributed separately through the full Docker image tar.
-
-## Raw Data Notes
-
-In the full Docker image, `raw/` is already included.
-
-If raw data are distributed separately for development or rebuilds, the expected bundle name is:
-
-```text
-SmarLensDB_raw_v0.1.tar.gz
-```
-
-Extract from the `SmarLensDB` folder:
-
-```bash
-tar -xzf SmarLensDB_raw_v0.1.tar.gz
-```
-
-Do not rename raw files. Do not manually decompress existing `.gz` files or compress currently uncompressed files. The current file names and compression states are part of the beta rebuild pipeline.
+This public stub is not intended to reproduce the production service locally. It documents the public API surface and clearly reports that production analyses require the public beta server.
 
 ## Data Sources
 
@@ -254,21 +91,22 @@ Associated public dataset:
 https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2
 ```
 
+Additional data-source details are provided in the SmarLens Resources and About pages.
+
+## Changelog
+
+Release notes are tracked in [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Disclaimer
 
-SmarLens is provided as a research-oriented beta resource. The developers and affiliated laboratory do not warrant, and do not assume legal liability or responsibility for, the accuracy, completeness, or usefulness of any data, analysis result, annotation, software output, document, or related information made available through this tool.
+SmarLens is provided as a research-oriented beta resource. The developers and affiliated laboratory do not warrant, and do not assume legal liability or responsibility for, the accuracy, completeness, or usefulness of any data, annotation, analysis result, software output, document, or related information made available through this tool.
 
-## Maintenance
+All computational results should be interpreted as supporting evidence and require independent biological and experimental validation.
 
-Pipeline maintained by Janghyun Choi.  
-Contact: jchoi@inha.ac.kr
+## Contact
 
-### Visitor Statistics
+Pipeline maintained by Janghyun Choi.
 
-SmarLens can keep privacy-preserving visitor statistics for public beta operation. It does not store submitted gene queries, raw IP addresses, full referrer URLs, or full User-Agent strings. The local runtime database stores daily hashed visitor IDs, request path groups, browser family, referrer host, and request counts.
-
-On a Docker-based server, view the summary with:
-
-```bash
-docker-compose exec -T smarlens python /opt/smarlens/app/usage_report.py --days 14
+```text
+jchoi@inha.ac.kr
 ```

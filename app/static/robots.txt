@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /downloads/
+Disallow: /jbrowse_data/
+Disallow: /app/
+Disallow: /db/
+Disallow: /raw/
+Disallow: /backups/
+Disallow: /logs/
+Disallow: /analytics/
+Disallow: /admin/
+
+Sitemap: https://smarlensdb.org/sitemap.xml

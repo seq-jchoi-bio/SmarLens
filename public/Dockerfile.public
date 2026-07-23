@@ -1,0 +1,13 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    HOST=0.0.0.0 \
+    PORT=8765
+
+WORKDIR /opt/smarlens
+COPY public ./public
+COPY app/static ./app/static
+
+EXPOSE 8765
+CMD ["python", "public/public_app.py"]

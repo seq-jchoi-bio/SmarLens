@@ -1,7 +1,38 @@
-# Exclude optional or generated data that should not enter Docker images.
+# Private production data and runtime assets
+app/smarlens.sqlite
+app/runtime/
+app/blastdb/
+app/static/jbrowse_data/
+app/static/jbrowse2/
+raw/
 db/Pfam/*
+!db/Pfam/README_Pfam.md
+
+# Private backend, build, and server implementation
+app/app.py
+app/build_db.py
+app/build_functional_db.py
+app/build_known_silybum_matches.py
+app/export_jbrowse_assets.py
+Dockerfile.full
+docker-compose.yml
+Caddyfile
+Launch_SmarLens.command
+scripts/
+development_notes_private/
+docs/operations_runbook.md
+docs/data_layout_audit.md
+.env.monitor
+
+# Operational outputs and archives
+logs/
+analytics/
+admin/
+monitoring/
 *.tar
 *.tar.gz
+
+# OS, cache, and Git metadata
 .DS_Store
 **/.DS_Store
 __pycache__/

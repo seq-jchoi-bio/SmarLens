@@ -3,11 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SmarLens</title>
+    <title>SmarLens - Milk Thistle Genome Database and Analysis Tools</title>
+    <meta name="description" content="SmarLens is a milk thistle (Silybum marianum) genome database and analysis workspace for gene search, genome browsing, BLAST, GO analysis, CRISPR guide RNA design, PCR primer design, and silymarin candidate prioritization.">
+    <link rel="canonical" href="https://smarlensdb.org/">
+    <meta property="og:title" content="SmarLens - Milk Thistle Genome Database">
+    <meta property="og:description" content="A milk thistle genome database and analysis workspace for gene search, genome browsing, BLAST, GO analysis, CRISPR guide RNA design, PCR primer design, and silymarin candidate prioritization.">
+    <meta property="og:url" content="https://smarlensdb.org/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SmarLens">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="SmarLens - Milk Thistle Genome Database">
+    <meta name="twitter:description" content="A milk thistle genome database and analysis workspace for gene search, genome browsing, BLAST, GO analysis, CRISPR guide RNA design, PCR primer design, and silymarin candidate prioritization.">
     <link rel="icon" href="/assets/favicon.png" type="image/png">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-    <link rel="stylesheet" href="/styles.css?v=20260623-countfix">
+    <link rel="stylesheet" href="/styles.css?v=20260722-resource-downloads">
   </head>
   <body>
     <nav class="top-nav" aria-label="Primary navigation">
@@ -16,30 +26,31 @@
         <span class="brand-sub">Milk Thistle Genome Database</span>
       </button>
       <div class="nav-menu">
-        <button type="button" class="nav-link" id="navAbout">About</button>
         <div class="nav-dropdown">
-          <button type="button" class="nav-link">Tools</button>
+          <button type="button" class="nav-link">Browse</button>
+          <div class="dropdown-menu">
+            <button type="button" id="navGenomeViewer">Genome Viewer</button>
+            <button type="button" id="navBlastSearch">BLAST Search</button>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-link">Search</button>
           <div class="dropdown-menu">
             <button type="button" id="navGeneSearch">Search Gene</button>
             <button type="button" id="navSimilarSearch">Find Similar Gene</button>
           </div>
         </div>
         <div class="nav-dropdown">
-          <button type="button" class="nav-link">Download</button>
-          <div class="dropdown-menu muted-menu">
-            <button type="button" disabled>TBD</button>
-            <button type="button" disabled>TBD</button>
-            <button type="button" disabled>TBD</button>
+          <button type="button" class="nav-link">Analyze</button>
+          <div class="dropdown-menu">
+            <button type="button" id="navFunctionalAnalysis">Functional Analysis</button>
+            <button type="button" id="navSilymarinPrioritizer">Silymarin Prioritizer</button>
+            <button type="button" id="navGuideDesign">Guide RNA Design</button>
+            <button type="button" id="navPrimerDesign">PCR Primer Design</button>
           </div>
         </div>
-        <div class="nav-dropdown">
-          <button type="button" class="nav-link">Document</button>
-          <div class="dropdown-menu muted-menu">
-            <button type="button" disabled>TBD</button>
-            <button type="button" disabled>TBD</button>
-            <button type="button" disabled>TBD</button>
-          </div>
-        </div>
+        <button type="button" class="nav-link" id="navResources">Resources</button>
+        <button type="button" class="nav-link" id="navAbout">About</button>
         <a class="nav-link nav-anchor" href="https://github.com/seq-jchoi-bio/SmarLens" target="_blank" rel="noreferrer">GitHub</a>
       </div>
     </nav>
@@ -48,28 +59,67 @@
         <header class="home-head">
           <div class="brand-line">
             <h1>SmarLens</h1>
-            <span class="beta-badge">Beta</span>
+            <span class="beta-badge">Beta v2.1.0</span>
           </div>
-          <p class="home-intro">SmarLens is a web-based genomics workspace for milk thistle (<em>Silybum marianum</em>), built to support gene-centered exploration of the chromosome-level genome assembly and annotation reported by <a href="https://doi.org/10.1038/s41597-024-03178-3" target="_blank" rel="noreferrer">Kim et al., 2024</a>. The current beta provides Smar gene lookup, transcript model visualization, sequence context, expression summaries, protein domain inspection, and similarity analysis against Arabidopsis resources.</p>
+          <p class="home-intro">SmarLens is a milk thistle genomics workspace designed to move from gene discovery to functional interpretation and experimental design. Browse the genome, search Smar genes or DNA sequences, compare Arabidopsis-informed homologs, run GO analysis, prioritize silymarin pathway candidates, and design CRISPR guides or PCR primers in one focused beta platform.</p>
         </header>
-        <div class="home-grid">
-          <article class="home-tile visual-tile">
+        <div class="home-tools">
+          <article class="home-photo">
             <img src="/assets/milk-thistle-photo.jpg" alt="Milk thistle flower photograph">
+            <span class="photo-credit">Photo © PDS Lab.</span>
           </article>
-          <button type="button" class="home-tile action-tile" id="openGeneSearch">
-            <span class="tile-icon search-icon" aria-hidden="true"></span>
-            <span class="tile-title">Gene Search</span>
-          </button>
-          <button type="button" class="home-tile action-tile" id="openSimilarSearch">
-            <span class="tile-icon similar-icon" aria-hidden="true"></span>
-            <span class="tile-title">Find Similar Gene</span>
-            <span class="tile-note">Arabidopsis to Smar candidates</span>
-          </button>
+          <div class="tool-list" aria-label="SmarLens tools">
+            <section class="tool-group tool-group-browse" aria-label="Browse tools">
+              <h2>Browse</h2>
+              <button type="button" class="tool-card" id="openGenomeViewer">
+                <span class="tile-icon genome-icon" aria-hidden="true"></span>
+                <span><strong>Genome Viewer</strong><small>Browse Smar chromosomes and gene models</small></span>
+              </button>
+              <button type="button" class="tool-card" id="openBlastSearch">
+                <span class="tile-icon blast-icon" aria-hidden="true"></span>
+                <span><strong>BLAST Search</strong><small>Find Smar genes from DNA sequence</small></span>
+              </button>
+            </section>
+            <section class="tool-group tool-group-search" aria-label="Search tools">
+              <h2>Search</h2>
+              <button type="button" class="tool-card" id="openGeneSearch">
+                <span class="tile-icon search-icon" aria-hidden="true"></span>
+                <span><strong>Gene Search</strong><small>Smar gene lookup and sequence context</small></span>
+              </button>
+              <button type="button" class="tool-card" id="openSimilarSearch">
+                <span class="tile-icon similar-icon" aria-hidden="true"></span>
+                <span><strong>Find Similar Gene</strong><small>Arabidopsis to Smar candidates</small></span>
+              </button>
+            </section>
+            <section class="tool-group tool-group-analyze" aria-label="Analyze tools">
+              <h2>Analyze</h2>
+              <button type="button" class="tool-card" id="openFunctionalAnalysis">
+                <span class="tile-icon function-icon" aria-hidden="true"></span>
+                <span><strong>Functional Analysis</strong><small>GO enrichment workspace</small></span>
+              </button>
+              <button type="button" class="tool-card" id="openSilymarinPrioritizer">
+                <span class="tile-icon prioritizer-icon" aria-hidden="true"></span>
+                <span><strong>Silymarin Prioritizer</strong><small>Evidence-ranked pathway candidates</small></span>
+              </button>
+              <button type="button" class="tool-card" id="openGuideDesign">
+                <span class="tile-icon guide-icon" aria-hidden="true"></span>
+                <span><strong>Guide RNA Design</strong><small>Smar CRISPR/Cas9 candidates</small></span>
+              </button>
+              <button type="button" class="tool-card" id="openPrimerDesign">
+                <span class="tile-icon primer-icon" aria-hidden="true"></span>
+                <span><strong>PCR Primer Design</strong><small>Primer pairs for Smar genes and regions</small></span>
+              </button>
+            </section>
+          </div>
         </div>
         <aside class="beta-notice" aria-label="Beta service notice">
           <strong>Beta Service Notice</strong>
-          <p>This service is currently in beta. Please read the About page and disclaimer before use. Due to limited server resources, a maximum of 10 queries can be submitted at a time.</p>
-          <p>SmarLens does not intentionally store submitted gene queries or use them for research tracking. Server logs may temporarily contain minimal technical information required for service operation and troubleshooting.</p>
+          <ul>
+            <li>This service is currently in <strong>beta</strong>. Please read the About page and disclaimer before use.</li>
+            <li><strong>Find Similar Gene</strong> is limited to 10 input queries per request because it runs protein homology and alignment-heavy analyses.</li>
+            <li>SmarLens does not intentionally store submitted <strong>gene queries</strong> or use them for research tracking.</li>
+            <li><strong>Server logs</strong> may temporarily contain minimal technical information for operation and troubleshooting.</li>
+          </ul>
         </aside>
       </section>
 
@@ -77,42 +127,126 @@
       <section id="aboutView" class="app-view about-view hidden">
         <header class="module-head about-head">
           <h1>About SmarLens</h1>
-          <p>SmarLens is a beta-stage genomics workspace for gene-centered exploration of milk thistle (<em>Silybum marianum</em>).</p>
+          <p>SmarLens is a beta-stage genomics workspace for gene-centered exploration and analysis of milk thistle (<em>Silybum marianum</em>).</p>
         </header>
         <section class="about-panel">
-          <h2>Purpose</h2>
-          <p>SmarLens was developed to make early milk thistle genome resources easier to search, inspect, and connect to functional hypotheses. The current release focuses on practical access to Smar gene identifiers, transcript structures, genomic sequence context, expression profiles, protein domains, and similarity relationships with Arabidopsis protein resources.</p>
-          <h2>Reference Genome And Annotation</h2>
-          <p>The genome assembly and annotation used by SmarLens are based on <a href="https://doi.org/10.1038/s41597-024-03178-3" target="_blank" rel="noreferrer">Chromosome-level genome assembly of milk thistle (<em>Silybum marianum</em> (L.) Gaertn.)</a>. Public source files are available from the associated <a href="https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2" target="_blank" rel="noreferrer">figshare dataset</a>.</p>
-          <h2>Current Scope</h2>
-          <p>This beta version provides gene search, multi-gene summaries, transcript model rendering, sequence visualization with flanking controls, normalized RNA-seq count summaries, Pfam-based protein domain views, Arabidopsis similarity candidates, and phylogenetic tree rendering. Download and documentation pages are planned but not yet implemented.</p>
-          <h2>Public Test Limits</h2>
-          <p>For public beta testing, SmarLens currently accepts up to 10 query terms per request. Heavy analyses such as BLAST, hmmscan, MAFFT, and FastTree are timeout-limited and run with restricted concurrency to protect server availability.</p>
           <h2>Disclaimer</h2>
-          <p class="about-disclaimer">SmarLens is provided as a research-oriented beta resource. The developers and affiliated laboratory do not warrant, and do not assume legal liability or responsibility for, the accuracy, completeness, or usefulness of any data, analysis result, annotation, software output, document, or related information made available through this tool.</p>
+          <p class="about-disclaimer">SmarLens is provided as a research-oriented <strong>beta resource</strong>. The developers and affiliated laboratory do not warrant, and do not assume legal liability or responsibility for, the accuracy, completeness, or usefulness of any data, annotation, analysis result, software output, document, or related information made available through this tool. All computational results should be interpreted as supporting evidence and require independent biological and experimental validation.</p>
+          <h2>Purpose</h2>
+          <p>SmarLens was developed to make milk thistle genome resources practical for gene-level discovery, interpretation, and experimental planning. The current beta brings genome browsing, Smar gene reports, DNA sequence search, Arabidopsis-informed homology, GO enrichment, silymarin candidate prioritization, CRISPR guide design, and PCR primer design into one connected workspace.</p>
+          <h2>Reference Genome and Annotation</h2>
+          <p>The core value of SmarLens depends directly on the chromosome-level milk thistle genome assembly and gene annotation. Without the gene models, transcript coordinates, protein sequences, and feature annotations generated from this reference resource, SmarLens could not provide gene reports, genome viewer tracks, sequence extraction, GO inference, primer design, guide RNA context, or candidate prioritization.</p>
+          <p>The genome assembly and annotation used by SmarLens are based on <a href="https://doi.org/10.1038/s41597-024-03178-3" target="_blank" rel="noreferrer">Kim et al., 2024</a>. Public source files are available from the associated <a href="https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2" target="_blank" rel="noreferrer">figshare dataset</a>. SmarLens development is being carried out in close connection with the annotation work, and the annotation resource should be cited as the primary biological foundation of this database.</p>
+          <h2>Implementation and Attribution</h2>
+          <p>SmarLens is an integration and interface layer built around public genome resources, established bioinformatics software, and open-source logic where appropriate. The project does not claim to have invented the underlying alignment, primer design, guide RNA, genome browsing, domain search, or ontology algorithms. Its contribution is the milk thistle-specific data organization, workflow integration, visualization, caching, scoring framework, and user-facing implementation.</p>
+          <div class="source-list">
+            <article>
+              <h3>Genome browsing</h3>
+              <p>Genome visualization is implemented with <a href="https://jbrowse.org/jb2/" target="_blank" rel="noreferrer">JBrowse 2</a> using SmarLens-prepared reference and annotation tracks.</p>
+            </article>
+            <article>
+              <h3>Similarity, domains, and trees</h3>
+              <p>Protein homology uses <a href="https://github.com/bbuchfink/diamond" target="_blank" rel="noreferrer">DIAMOND</a> with BLASTP fallback. DNA search uses local <a href="https://blast.ncbi.nlm.nih.gov/" target="_blank" rel="noreferrer">NCBI BLAST+</a> databases. Protein domains and family views use <a href="https://www.ebi.ac.uk/interpro/download/Pfam/" target="_blank" rel="noreferrer">Pfam</a>/<a href="http://hmmer.org/" target="_blank" rel="noreferrer">HMMER</a>, <a href="https://mafft.cbrc.jp/alignment/software/" target="_blank" rel="noreferrer">MAFFT</a>, and <a href="http://www.microbesonline.org/fasttree/" target="_blank" rel="noreferrer">FastTree</a>.</p>
+            </article>
+            <article>
+              <h3>CRISPR guide RNA design</h3>
+              <p>The guide RNA workflow follows the same target/PAM and off-target counting principle as <a href="http://crispr.dbcls.jp/" target="_blank" rel="noreferrer">CRISPRdirect</a>, with milk thistle-specific jellyfish exact-count indexes and SmarLens-specific result presentation.</p>
+            </article>
+            <article>
+              <h3>PCR primer design</h3>
+              <p>Primer candidates are generated with <a href="https://github.com/primer3-org/primer3" target="_blank" rel="noreferrer">Primer3</a>, then annotated with milk thistle genome specificity checks.</p>
+            </article>
+            <article>
+              <h3>Functional inference</h3>
+              <p>GO analysis is inferred through Arabidopsis homolog relationships and Gene Ontology annotations. These results should be treated as homology-supported functional hypotheses, not curated milk thistle experimental annotations.</p>
+            </article>
+            <article>
+              <h3>Silymarin prioritization</h3>
+              <p>Silymarin Prioritizer ranks Smar genes using pathway keyword evidence, inferred GO evidence, Arabidopsis homology, flower-biased expression, gene model quality, and local pathway-neighborhood context. The score is intended for hypothesis prioritization, not as proof of pathway function.</p>
+            </article>
+          </div>
+          <h2>Current Scope</h2>
+          <p>SmarLens v2.1.0 is organized into three working areas: Browse for genome viewing and BLAST-like sequence search, Search for Smar gene reports and Arabidopsis-to-Smar similarity analysis, and Analyze for GO enrichment, silymarin candidate prioritization, CRISPR guide RNA design, and PCR primer design. Current data links and method notes are collected in the Resources page.</p>
+          <h2>Public Test Limits</h2>
+          <p>For public beta testing, heavy protein homology analyses such as Find Similar Gene are limited to 10 input queries per request. Gene Search, GO analysis, BLAST Search, guide RNA design, primer design, and genome browsing use task-specific limits such as input size, result count, sequence length, or genomic span to protect server availability.</p>
           <h2>Development Team</h2>
           <div class="team-grid">
             <article class="team-card">
-              <h3>Main Developer and Code Architect</h3>
-              <p><strong>Janghyun Choi, Ph.D.</strong></p>
-              <p>Implemented the main pipeline modules and designed the major functional components of SmarLens.</p>
+              <span class="team-role">Lead development</span>
+              <div class="team-people">
+                <div class="team-person">
+                  <h3>Janghyun Choi, Ph.D.</h3>
+                  <p class="team-affiliation">Inha University · Department of Biological Sciences</p>
+                </div>
+              </div>
+              <p class="team-description">Main developer and code architect. Designed and implemented the SmarLens interface, pipeline modules, scoring workflows, and integrated analysis components.</p>
             </article>
             <article class="team-card">
-              <h3>Project Supervisors</h3>
-              <p><strong>Janghyun Choi, Ph.D.</strong></p>
-              <p><strong>Jinmi Yoon, Ph.D.</strong></p>
-              <p>Provided conceptual guidance and overall project supervision.</p>
+              <span class="team-role">Contributor</span>
+              <div class="team-people">
+                <div class="team-person">
+                  <h3>Sinhoe Ahn <span class="team-degree">M.S. candidate</span></h3>
+                  <p class="team-affiliation">Inha University · Department of Biological Sciences</p>
+                </div>
+              </div>
+              <p class="team-description">Contributed to module implementation, pipeline testing, data processing, logic refinement, and validation of analysis outputs.</p>
             </article>
-            <article class="team-card">
-              <h3>Contributor</h3>
-              <p><strong>Sinhoe Ahn</strong></p>
-              <p>Contributed to code implementation, module development, pipeline testing, data processing, logic refinement, and validation.</p>
+            <article class="team-card team-card-supervisors">
+              <span class="team-role">Project supervisors</span>
+              <div class="team-people">
+                <div class="team-person">
+                  <h3>Jinmi Yoon, Ph.D.</h3>
+                  <p class="team-affiliation">Inha University · Department of Biological Sciences</p>
+                </div>
+                <div class="team-person">
+                  <h3>Kyung Do Kim, Ph.D.</h3>
+                  <p class="team-affiliation">Sejong University · Integrative Biological Sciences and Industry</p>
+                </div>
+                <div class="team-person">
+                  <h3>Lae-Hyeon Cho, Ph.D.</h3>
+                  <p class="team-affiliation">Pusan National University · Plant Bioscience</p>
+                </div>
+              </div>
+              <p class="team-description supervisor-description">Provided project direction, biological interpretation, genome resource guidance, funding support, and overall supervision for database development.</p>
             </article>
           </div>
           <h2>Maintenance</h2>
           <p>Pipeline maintained by <strong>Janghyun Choi</strong> · <a href="mailto:jchoi@inha.ac.kr">jchoi@inha.ac.kr</a></p>
           <h2>Source Code</h2>
           <p>Source code and issue tracking are available on <a href="https://github.com/seq-jchoi-bio/SmarLens" target="_blank" rel="noreferrer">GitHub</a>.</p>
+        </section>
+      </section>
+
+      <section id="resourcesView" class="app-view resources-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <header class="module-head">
+          <h1>Resources</h1>
+          <p>Reference data, downloadable files, and concise method notes for the current SmarLens beta.</p>
+        </header>
+        <section class="resources-panel">
+          <h2>Data Availability</h2>
+          <p>SmarLens is built around the chromosome-level milk thistle genome assembly, gene annotation, transcript/protein sequences, expression summaries, and locally prepared analysis resources. The downloads below are data files only; BLAST, DIAMOND, jellyfish, tabix, and other index files are not listed for direct download.</p>
+          <h2>Downloadable Data</h2>
+          <ul class="resource-link-list">
+            <li><a href="/downloads/smarlens.sqlite" download>SmarLens SQLite database</a> <span><strong>Source:</strong> generated in this project. Integrated gene models, expression summaries, homology, GO, known Silybum matches, and cached analysis tables.</span></li>
+            <li><a href="/downloads/smar-genome.fa.gz" download>Milk thistle genome FASTA</a> <span><strong>Source:</strong> Kim et al., 2024 reference dataset. Chromosome-level Silybum marianum EM05 genome sequence.</span></li>
+            <li><a href="/downloads/smar-gene-models.gff" download>Milk thistle gene models GFF</a> <span><strong>Source:</strong> Kim et al., 2024 reference dataset. Gene, transcript, exon, and CDS annotation used by SmarLens.</span></li>
+            <li><a href="/downloads/smar-proteins.fa" download>Milk thistle protein FASTA</a> <span><strong>Source:</strong> Kim et al., 2024 reference dataset. Predicted Smar protein sequences from the published annotation.</span></li>
+            <li><a href="/downloads/smar-expression-counts.txt" download>Milk thistle expression count table</a> <span><strong>Source:</strong> processed in this project from the Kim et al., 2024 EM05 RNA-seq dataset, BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1021369" target="_blank" rel="noreferrer">PRJNA1021369</a>. The file is a seven-sample count matrix, not a DEG result table.</span></li>
+            <li><a href="/downloads/arabidopsis-proteins.fa" download>Arabidopsis protein FASTA</a> <span><strong>Source:</strong> Ensembl Plants TAIR10 peptide FASTA. Used as the Arabidopsis protein reference for homology workflows.</span></li>
+            <li><a href="https://figshare.com/articles/dataset/_i_Silybum_marianum_i_genome_assembly_and_annotation/24190023/2" target="_blank" rel="noreferrer">Reference genome dataset</a></li>
+            <li><a href="https://plants.ensembl.org/Arabidopsis_thaliana/Info/Annotation/" target="_blank" rel="noreferrer">Arabidopsis TAIR10 annotation source</a></li>
+            <li><a href="https://doi.org/10.1038/s41597-024-03178-3" target="_blank" rel="noreferrer">Reference publication</a></li>
+            <li><a href="https://github.com/seq-jchoi-bio/SmarLens" target="_blank" rel="noreferrer">Source code on GitHub</a></li>
+          </ul>
+          <p>CDS/transcript FASTA exports and additional table-level exports can be added after the final release checks. A formal SmarLens citation will be added when available.</p>
+          <h2>Local Analysis Resources</h2>
+          <p><strong>Genome viewer:</strong> JBrowse 2 track files are served from SmarLens-prepared reference and annotation files.</p>
+          <p><strong>Sequence search and homology:</strong> local BLAST databases and DIAMOND indexes support DNA sequence search and Arabidopsis-informed protein similarity workflows.</p>
+          <p><strong>Guide RNA and primer design:</strong> jellyfish exact-count indexes and local genome specificity checks are used to summarize candidate uniqueness in the milk thistle reference genome.</p>
+          <p><strong>Functional analysis:</strong> GO enrichment and silymarin candidate prioritization use Arabidopsis homolog-inferred annotations, expression evidence, protein/domain evidence, and milk thistle gene model context.</p>
+          <h2>Use Notes</h2>
+          <p>SmarLens is a beta-stage research tool. Homology, GO, CRISPR, primer, BLAST, and prioritizer outputs should be treated as computational evidence and interpreted together with independent biological validation.</p>
         </section>
       </section>
 
@@ -124,14 +258,14 @@
             <p>Silybum marianum gene lookup</p>
           </div>
           <form id="searchForm">
-            <textarea id="query" rows="4" spellcheck="false" placeholder="Smar01g000010&#10;Smar09g004660"></textarea>
+            <textarea id="query" rows="4" spellcheck="false" placeholder="Smar01g000010&#10;CHS&#10;XCI12454.1"></textarea>
             <div class="controls">
               <button type="submit">Search</button>
               <button type="button" id="exampleBtn" class="secondary">Example</button>
               <label class="file-button">Upload IDs<input type="file" id="idFile" accept=".txt,.csv,.tsv"></label>
-              <span id="status">Loading database status...</span>
-              <span class="search-limit">Up to 10 query IDs per request.</span>
+              <span class="search-limit">Up to 100 Smar IDs, known Silybum symbols, or accessions per request.</span>
             </div>
+            <p class="upload-rule">Upload a TXT, CSV, or TSV file with one Smar gene ID, known Silybum gene symbol, or NCBI protein accession per line, or terms separated by commas, semicolons, tabs, or spaces.</p>
           </form>
         </section>
 
@@ -143,14 +277,296 @@
         <div class="similar-workflow">
           <header class="module-head">
             <h1>Find Similar Gene</h1>
-            <p>Start with up to 10 Arabidopsis gene symbols or AT gene IDs, then identify similar milk thistle candidates.</p>
+            <p>Identify milk thistle genes similar to known Arabidopsis genes.</p>
           </header>
+          <section class="guide-method-note" aria-label="Find similar gene method">
+            <strong>Search principle</strong>
+            <ol>
+              <li>Resolve each Arabidopsis symbol or AT gene ID to protein isoforms, then let you keep only the isoforms to compare.</li>
+              <li>Search selected Arabidopsis proteins against milk thistle proteins using DIAMOND blastp, with BLASTP fallback when needed.</li>
+              <li>Rank Smar candidates by protein similarity, then calculate shared Pfam-domain identity with MAFFT for detailed pairwise inspection.</li>
+              <li>Use results as homology evidence, not proof of orthology or conserved function; validate key candidates with domain, GO, expression, and experimental context.</li>
+            </ol>
+          </section>
           <form id="similarForm" class="similar-form">
-            <input id="atQuery" type="text" spellcheck="false" placeholder="LEC2 ABI3 FUS3 or AT1G28300">
-            <button type="submit">Check</button>
+            <textarea id="atQuery" rows="4" spellcheck="false" placeholder="LEC2&#10;ABI3&#10;AT1G28300"></textarea>
+            <div class="controls">
+              <button type="submit">Check</button>
+              <button type="button" id="similarExampleBtn" class="secondary">Example</button>
+              <span class="search-limit">Up to 10 Arabidopsis gene symbols or AT gene IDs per request.</span>
+            </div>
           </form>
           <section id="atConfirm" class="confirm-panel hidden"></section>
           <section id="similarResults" class="results"></section>
+        </div>
+      </section>
+
+      <section id="blastView" class="app-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="blast-workflow">
+          <header class="module-head">
+            <h1>BLAST Search</h1>
+            <p>Find milk thistle genomic loci and Smar genes from pasted DNA sequence.</p>
+          </header>
+          <section class="guide-method-note" aria-label="BLAST search method">
+            <strong>Search principle</strong>
+            <p>Paste a FASTA or plain DNA sequence. SmarLens searches the milk thistle reference genome with local NCBI BLASTN, filters hits by identity and query coverage, then annotates each locus with overlapping Smar genes or the nearest Smar gene when no overlap exists. Short queries use the BLASTN short-task setting; longer queries use standard BLASTN.</p>
+          </section>
+          <form id="blastForm" class="blast-form">
+            <section class="blast-input-panel">
+              <label class="field-label">DNA sequence
+                <textarea id="blastSequence" rows="10" spellcheck="false" placeholder=">query1&#10;ATG..."></textarea>
+              </label>
+            </section>
+            <section class="blast-options-panel">
+              <label class="field-label">Minimum identity (%)
+                <input id="blastMinIdentity" type="number" min="0" max="100" step="0.1" value="80">
+              </label>
+              <label class="field-label">Minimum query coverage (%)
+                <input id="blastMinCoverage" type="number" min="0" max="100" step="0.1" value="50">
+              </label>
+              <label class="field-label">Max hits
+                <input id="blastMaxHits" type="number" min="1" max="50" value="20">
+              </label>
+              <div class="guide-actions">
+                <button type="submit">Search sequence</button>
+                <button type="button" id="blastExampleBtn" class="secondary">Example</button>
+              </div>
+            </section>
+          </form>
+          <section id="blastResults" class="results"></section>
+        </div>
+      </section>
+
+      <section id="guideView" class="app-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="guide-workflow">
+          <header class="module-head">
+            <h1>Guide RNA Design</h1>
+            <p>Design candidate CRISPR/Cas9 guide RNAs from a milk thistle gene region or pasted DNA sequence.</p>
+          </header>
+          <section class="guide-method-note" aria-label="Guide RNA design principle">
+            <strong>Design principle</strong>
+            <p>SmarLens generates guide RNA candidates using the same PAM-scanning principle as <a href="http://crispr.dbcls.jp/" target="_blank" rel="noreferrer">CRISPRdirect</a>: it scans both strands of the input DNA sequence, detects the selected PAM motif, and extracts the adjacent 20 nt protospacer as a guide candidate. Milk thistle-specific specificity checks are then performed locally against the indexed <em>Silybum marianum</em> reference genome, and the results are displayed in a SmarLens-oriented format.</p>
+          </section>
+          <form id="guideForm" class="guide-form">
+            <div class="guide-grid">
+              <section class="guide-input-panel">
+                <div class="segmented" role="group" aria-label="Guide RNA input mode">
+                  <label><input type="radio" name="guideSource" value="gene" checked> Smar gene</label>
+                  <label><input type="radio" name="guideSource" value="sequence"> Paste sequence</label>
+                </div>
+                <label class="field-label" id="guideGeneWrap">Gene ID
+                  <input id="guideGeneId" type="text" spellcheck="false" placeholder="Smar01g000010">
+                </label>
+                <label class="field-label guide-sequence-wrap hidden" id="guideSequenceWrap">DNA sequence
+                  <textarea id="guideSequence" rows="8" spellcheck="false" placeholder="Paste FASTA or plain nucleotide sequence"></textarea>
+                </label>
+              </section>
+              <section class="guide-options-panel">
+                <label class="field-label">PAM
+                  <input id="guidePam" type="text" spellcheck="false" value="NGG">
+                </label>
+                <label class="field-label">Guide length
+                  <input id="guideLength" type="number" min="17" max="24" value="20">
+                </label>
+                <label class="field-label">Upstream flank
+                  <input id="guideUpstream" type="number" min="0" max="5000" step="100" value="0">
+                </label>
+                <label class="field-label">Downstream flank
+                  <input id="guideDownstream" type="number" min="0" max="5000" step="100" value="0">
+                </label>
+                <div class="guide-actions">
+                  <button type="submit">Design guides</button>
+                  <button type="button" id="guideExampleBtn" class="secondary">Example</button>
+                </div>
+              </section>
+            </div>
+          </form>
+          <section id="guideResults" class="results"></section>
+        </div>
+      </section>
+
+      <section id="primerView" class="app-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="primer-workflow">
+          <header class="module-head">
+            <h1>PCR Primer Design</h1>
+            <p>Design PCR primer pairs from a milk thistle gene region or pasted DNA sequence.</p>
+          </header>
+          <section class="guide-method-note" aria-label="PCR primer design method">
+            <strong>Design principle</strong>
+            <p>SmarLens uses Primer3-compatible constraints for primer length, Tm, GC%, and amplicon size, then checks milk thistle genome specificity at both the individual primer level and the primer-pair product level. If primer3_core is installed on the server, SmarLens uses it; otherwise it falls back to a local constraint-based primer scanner.</p>
+          </section>
+          <form id="primerForm" class="primer-form">
+            <div class="primer-grid">
+              <section class="primer-input-panel">
+                <div class="segmented" role="group" aria-label="PCR primer input mode">
+                  <label><input type="radio" name="primerSource" value="gene" checked> Smar gene</label>
+                  <label><input type="radio" name="primerSource" value="sequence"> Paste sequence</label>
+                </div>
+                <label class="field-label" id="primerGeneWrap">Gene ID
+                  <input id="primerGeneId" type="text" spellcheck="false" placeholder="Smar01g000010">
+                </label>
+                <label class="field-label primer-sequence-wrap hidden" id="primerSequenceWrap">DNA sequence
+                  <textarea id="primerSequence" rows="8" spellcheck="false" placeholder="Paste FASTA or plain nucleotide sequence"></textarea>
+                </label>
+              </section>
+              <section class="primer-options-panel">
+                <div class="parameter-row">
+                  <label class="field-label">Amplicon min
+                    <input id="primerProductMin" type="number" min="50" max="5000" value="100">
+                  </label>
+                  <label class="field-label">Amplicon max
+                    <input id="primerProductMax" type="number" min="50" max="5000" value="500">
+                  </label>
+                </div>
+                <div class="parameter-row">
+                  <label class="field-label">Primer min
+                    <input id="primerLengthMin" type="number" min="15" max="35" value="18">
+                  </label>
+                  <label class="field-label">Primer max
+                    <input id="primerLengthMax" type="number" min="15" max="35" value="24">
+                  </label>
+                </div>
+                <div class="parameter-row">
+                  <label class="field-label">Tm min
+                    <input id="primerTmMin" type="number" min="40" max="90" step="0.1" value="57">
+                  </label>
+                  <label class="field-label">Tm max
+                    <input id="primerTmMax" type="number" min="40" max="90" step="0.1" value="63">
+                  </label>
+                </div>
+                <div class="parameter-row">
+                  <label class="field-label">GC min
+                    <input id="primerGcMin" type="number" min="0" max="100" step="0.1" value="40">
+                  </label>
+                  <label class="field-label">GC max
+                    <input id="primerGcMax" type="number" min="0" max="100" step="0.1" value="60">
+                  </label>
+                </div>
+                <div class="parameter-row">
+                  <label class="field-label">Upstream flank
+                    <input id="primerUpstream" type="number" min="0" max="10000" step="100" value="500">
+                  </label>
+                  <label class="field-label">Downstream flank
+                    <input id="primerDownstream" type="number" min="0" max="10000" step="100" value="500">
+                  </label>
+                </div>
+                <div class="guide-actions">
+                  <button type="submit">Design primers</button>
+                  <button type="button" id="primerExampleBtn" class="secondary">Example</button>
+                </div>
+              </section>
+            </div>
+          </form>
+          <section id="primerResults" class="results"></section>
+        </div>
+      </section>
+
+      <section id="genomeView" class="app-view genome-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="genome-workflow">
+          <header class="module-head">
+            <h1>Genome Viewer</h1>
+            <p>Browse milk thistle chromosomes, genes, transcripts, exons, and CDS features in an embedded JBrowse 2 genome browser.</p>
+          </header>
+          <section class="genome-browser">
+            <section id="genomeStatus" class="genome-status"></section>
+            <section id="genomeCanvas" class="genome-canvas"></section>
+          </section>
+        </div>
+      </section>
+
+      <section id="prioritizerView" class="app-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="prioritizer-workflow">
+          <header class="module-head">
+            <h1>Silymarin Prioritizer</h1>
+            <p>Rank milk thistle genes by weighted pathway, GO, homology, expression, gene model, and neighborhood evidence for silymarin-related hypotheses.</p>
+          </header>
+          <section class="guide-method-note" aria-label="Silymarin prioritizer method">
+            <strong>Scoring principle</strong>
+            <p>This tool ranks milk thistle genes as silymarin-related candidates by combining interpretable computational evidence: pathway-related keyword support from Arabidopsis homolog descriptions, inferred GO/domain hints, homolog confidence, flower-biased RNA-seq expression, gene model completeness, and local candidate-gene neighborhood. The score is intended for hypothesis prioritization only and should not be interpreted as experimental validation of silymarin biosynthetic function.</p>
+          </section>
+          <form id="prioritizerForm" class="prioritizer-form">
+            <section class="prioritizer-input-panel">
+              <label class="field-label">Smar gene list optional
+                <textarea id="prioritizerGenes" rows="10" spellcheck="false" placeholder="Leave blank for genome-wide ranking&#10;Smar01g000010&#10;Smar09g004660"></textarea>
+              </label>
+              <div class="controls">
+                <button type="submit">Run prioritizer</button>
+                <button type="button" id="prioritizerExampleBtn" class="secondary">Example</button>
+                <span class="search-limit">Blank input ranks all genes; submitted lists accept up to 1,000 Smar gene IDs.</span>
+              </div>
+            </section>
+            <section class="prioritizer-options-panel" aria-label="Candidate ranking options">
+              <label class="field-label">Return top
+                <input id="prioritizerLimit" type="number" min="10" max="500" value="100">
+              </label>
+              <label class="field-label">Minimum score
+                <input id="prioritizerMinScore" type="number" min="0" max="100" value="0">
+              </label>
+            </section>
+          </form>
+          <section id="prioritizerResults" class="results"></section>
+        </div>
+      </section>
+
+      <section id="functionalView" class="app-view hidden">
+        <button type="button" class="secondary backHome">Back</button>
+        <div class="functional-workflow">
+          <header class="module-head">
+            <h1>Functional Analysis</h1>
+            <p>Run Arabidopsis homolog-inferred GO enrichment for milk thistle gene sets.</p>
+          </header>
+          <section class="guide-method-note" aria-label="Functional analysis method">
+            <strong>Analysis principle</strong>
+            <p>SmarLens maps milk thistle genes to Arabidopsis homologs, transfers Arabidopsis GO terms as inferred annotations, and tests whether submitted Smar genes are over-represented for each GO term using a one-sided hypergeometric test. The default background is all Smar genes with inferred GO annotation under the selected filters; an optional custom background can be used for RNA-seq or other experiments where only a subset of genes was testable. Results are functional hypotheses and should be interpreted with homolog confidence and biological context.</p>
+          </section>
+          <form id="goForm" class="functional-form">
+            <section class="functional-input-panel">
+              <label class="field-label">Smar gene list
+                <textarea id="goGenes" rows="10" spellcheck="false" placeholder="Smar01g000010&#10;Smar01g000020&#10;Smar09g004660"></textarea>
+              </label>
+              <label class="field-label">Background list <span class="optional-label">(optional)</span>
+                <textarea id="goBackgroundGenes" rows="10" spellcheck="false" placeholder="Leave blank to use all Smar genes with inferred GO annotation"></textarea>
+              </label>
+              <div class="controls">
+                <button type="submit">Run GO analysis</button>
+                <button type="button" id="goExampleBtn" class="secondary">Example</button>
+                <label class="file-button">Upload IDs<input type="file" id="goGeneFile" accept=".txt,.csv,.tsv"></label>
+                <label class="file-button">Upload background<input type="file" id="goBackgroundFile" accept=".txt,.csv,.tsv"></label>
+                <span class="search-limit go-input-note">
+                  <span>Gene list: up to 1,000 IDs. Background: up to 100,000 IDs.</span>
+                  <span>Upload TXT/CSV/TSV with one ID per line or separated by comma, tab, or space.</span>
+                </span>
+              </div>
+            </section>
+            <section class="functional-options-panel" aria-label="GO options">
+              <div class="option-note">
+                <strong>GO scope</strong>
+                <span>Analysis computes direct and all ancestor terms together. Use each result section to switch scope and level.</span>
+              </div>
+              <label class="field-label">Minimum count
+                <input id="goMinCount" type="number" min="1" max="1000" value="2">
+              </label>
+              <label class="field-label">Multiple testing
+                <select id="goCorrection">
+                  <option value="benjamini">Benjamini-Hochberg</option>
+                  <option value="bonferroni">Bonferroni</option>
+                  <option value="holm">Holm</option>
+                </select>
+              </label>
+              <div class="confidence-box">
+                <span>Homolog confidence</span>
+                <label><input type="checkbox" class="goConfidence" value="high" checked> High</label>
+                <label><input type="checkbox" class="goConfidence" value="medium" checked> Medium</label>
+                <label><input type="checkbox" class="goConfidence" value="low"> Low</label>
+              </div>
+            </section>
+          </form>
+          <section id="goResults" class="results"></section>
         </div>
       </section>
 
@@ -161,6 +577,6 @@
     </div>
       <footer class="site-footer">© 2026 Plant Developmental Systems Biology Laboratory and J. Choi. All rights reserved.</footer>
     </main>
-    <script src="/app.js?v=20260623-countfix"></script>
+    <script src="/app.js?v=20260722-resource-downloads"></script>
   </body>
 </html>
